@@ -150,8 +150,8 @@ public class ApiTests {
     void updatedUser() {
         String createUserData = "{\"id\":0,\"username\":\"Vitalik QA Engineer\",\"firstName\":\"Kuz\",\"lastName\":\"Vit\",\"email\":\"fdf@gsgsg.ru\",\"password\":\"7474\",\"phone\":\"48484\",\"userStatus\":0}";
         given()
+                .body(createUserData)
                 .contentType(JSON)
-                .body(createUserData)  // Передаем данные тела запроса
                 .when()
                 .log().uri()
                 .put("/user/{username}", "Vitalik QA Engineer")  // Параметр передается в путь
