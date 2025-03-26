@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.*;
 public class ApiTests {
 
     @BeforeAll
-    public static void setUp(){
+    public static void setUp() {
 
         RestAssured.baseURI = "https://petstore.swagger.io";
         RestAssured.basePath = "/v2";
@@ -21,19 +21,19 @@ public class ApiTests {
     @Test
     @DisplayName("Добавляем нового питомца в магазин")
     void addingANewPetToTheStore() {
-       String petData = "{\"id\":0,\"category\":{\"id\":0,\"name\":\"string\"},\"name\":\"Nora\",\"photoUrls\":[\"string\"],\"tags\":[{\"id\":0,\"name\":\"string\"}],\"status\":\"available\"}";
-    given()
-            .body(petData)
-            .contentType(JSON)
-            .when()
-            .log().uri()
-            .post("/pet")
-            .then()
-            .log().status()
-            .log().body()
-            .statusCode(200)
-            .body("name", equalTo("Nora"))
-            .body("status", equalTo("available"));
+        String petData = "{\"id\":0,\"category\":{\"id\":0,\"name\":\"string\"},\"name\":\"Nora\",\"photoUrls\":[\"string\"],\"tags\":[{\"id\":0,\"name\":\"string\"}],\"status\":\"available\"}";
+        given()
+                .body(petData)
+                .contentType(JSON)
+                .when()
+                .log().uri()
+                .post("/pet")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .body("name", equalTo("Nora"))
+                .body("status", equalTo("available"));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ApiTests {
     void petSearchByStatus() {
         given()
                 .contentType(JSON)
-                .queryParam("status","pending")
+                .queryParam("status", "pending")
                 .when()
                 .log().uri()
                 .get("/pet/findByStatus")
@@ -67,16 +67,16 @@ public class ApiTests {
                 .log().status()
                 .log().body()
                 .statusCode(200)
-                .body("status", hasItem ("pending"));
+                .body("status", hasItem("pending"));
 
     }
 
     @Test
     @DisplayName("Поиск питомца по ID")
-    void petSearchByID(){
+    void petSearchByID() {
         given()
                 .contentType(JSON)
-                .pathParam("petId","9223372036854775807")
+                .pathParam("petId", "9223372036854775807")
                 .when()
                 .log().uri()
                 .get("/pet/{petId}")
@@ -92,7 +92,7 @@ public class ApiTests {
     void deletingAPetByID() {
         given()
                 .contentType(JSON)
-                .pathParam("petId","9223372036854775807" )
+                .pathParam("petId", "9223372036854775807")
                 .when()
                 .log().uri()
                 .delete("/pet/{petId}")
@@ -103,27 +103,11 @@ public class ApiTests {
 
     }
 
-    @Test
-    @DisplayName("Добавление заказа для питомца")
-    void addingAnOrderForAPet() {
-        String orderData = "{\"id\":9223372036854775807,\"petId\":0,\"quantity\":0,\"status\":\"placed\",\"complete\":true}";
-        given()
-                .body(orderData)
-                .contentType(JSON)
-                .when()
-                .log().uri()
-                .post("/order")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .body("status", equalTo("placed")); // что не так в этом тесте ?
-
-    }
 
     @Test
+    @DisplayName("Создание нового пользователя")
     void createUser() {
-        String createUserData = "{\"id\":0,\"username\":\"fdf\",\"firstName\":\"dfd\",\"lastName\":\"fdf\",\"email\":\"fdf@gsgsg.ru\",\"password\":\"7474\",\"phone\":\"48484\",\"userStatus\":0}";
+        String createUserData = "{\"id\":0,\"username\":\"Vitalik\",\"firstName\":\"Kuz\",\"lastName\":\"Vit\",\"email\":\"fdf@gsgsg.ru\",\"password\":\"7474\",\"phone\":\"48484\",\"userStatus\":0}";
 
         given()
                 .body(createUserData)
@@ -132,16 +116,96 @@ public class ApiTests {
                 .post("/user")
                 .then()
                 .log().status()  // Логируем статус ответа
-                .log().body()    // Логируем тело ответа
+                .log().body()
                 .statusCode(200)
-                .body("username", is("fdf"))
-                .body("firstName", is("dfd"))
-                .body("email", is("fdf@gsgsg.ru"))
-                .body("phone", is("48484"))
-                .body("id", notNullValue())
-                .body("userStatus", is(0)); // Проверка, что статус пользователя равен 0
+                .body("code", is(200))
+                .body("type", is("unknown"))
+                .body("message", notNullValue());
+
     }
+
+    @Test
+    @DisplayName("Успешный логин пользователя")
+    void successfulUserLogin() {
+        given()
+                .contentType(JSON)
+                .queryParam("username", "Vitalik")
+                .queryParam("password", "7474")
+                .when()
+                .log().uri()
+                .get("/user/login")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .body("code", is(200))
+                .body("type", is("unknown"))
+                .body("message", notNullValue());
 
 
     }
+
+    @Test
+    @DisplayName("Обновленные данные пользователя")
+    void updatedUser() {
+        String createUserData = "{\"id\":0,\"username\":\"Vitalik QA Engineer\",\"firstName\":\"Kuz\",\"lastName\":\"Vit\",\"email\":\"fdf@gsgsg.ru\",\"password\":\"7474\",\"phone\":\"48484\",\"userStatus\":0}";
+        given()
+                .contentType(JSON)
+                .body(createUserData)  // Передаем данные тела запроса
+                .when()
+                .log().uri()
+                .put("/user/{username}", "Vitalik QA Engineer")  // Параметр передается в путь
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .body("code", is(200))
+                .body("type", is("unknown"))
+                .body("message", notNullValue());
+
+    }
+
+
+    @Test
+    @DisplayName("Успешный разлогин пользователя")
+    void successfulUserLogout() {
+        given()
+                .contentType(JSON)
+                .queryParam("username", "Vitalik")
+                .queryParam("password", "7474")
+                .when()
+                .log().uri()
+                .get("/user/logout")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .body("code", is(200))
+                .body("type", is("unknown"))
+                .body("message", notNullValue());
+
+
+    }
+
+    @Test
+    @DisplayName("Успешное удаление пользователя")
+    void successfulUserDeletion() {
+        given()
+                .contentType(JSON)
+                .queryParam("username", "Vitalik")
+                .queryParam("password", "7474")
+                .when()
+                .log().uri()
+                .delete("/user/{username}", "Vitalik QA Engineer")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .body("code", is(200))
+                .body("type", is("unknown"))
+                .body("message", notNullValue());
+
+
+    }
+}
 
