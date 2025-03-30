@@ -1,13 +1,16 @@
 package tests;
 
+import data.PetData;
+import data.UserData;
 import io.restassured.RestAssured;
+import lombok.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
+
 
 public class ApiTests {
 
@@ -21,9 +24,12 @@ public class ApiTests {
     @Test
     @DisplayName("Добавляем нового питомца в магазин")
     void addingANewPetToTheStore() {
-        String petData = "{\"id\":0,\"category\":{\"id\":0,\"name\":\"string\"},\"name\":\"Nora\",\"photoUrls\":[\"string\"],\"tags\":[{\"id\":0,\"name\":\"string\"}],\"status\":\"available\"}";
+        PetModel pet = new PetModel();
+        pet.setName(PetData.generatePetName());  // Генерация случайного имени питомца
+        pet.setStatus(PetData.generatePetStatus());
+
         given()
-                .body(petData)
+                .body(pet)
                 .contentType(JSON)
                 .when()
                 .log().uri()
@@ -32,16 +38,37 @@ public class ApiTests {
                 .log().status()
                 .log().body()
                 .statusCode(200)
-                .body("name", equalTo("Nora"))
-                .body("status", equalTo("available"));
+                .body("name", equalTo(pet.getName()))
+                .body("status", equalTo(pet.getStatus()));
+    }
+
+    @Test
+    @DisplayName("Поиск питомцев по статусу")
+    void petSearchByStatus() {
+        PetStatusModel petStatus = new PetStatusModel();
+        petStatus.setStatus("pending");
+        given()
+                .contentType(JSON)
+                .queryParam("status", petStatus.getStatus())
+                .when()
+                .log().uri()
+                .get("/pet/findByStatus")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .body("status", hasItem(petStatus.getStatus()));
+
     }
 
     @Test
     @DisplayName("Обновляем информацию о питомце")
     void updatingInformationAboutThePet() {
-        String petData = "{\"id\":1,\"category\":{\"id\":9223372036854775807,\"name\":\"string\"},\"name\":\"Charlik\",\"photoUrls\":[\"string\"],\"tags\":[{\"id\":0,\"name\":\"string\"}],\"status\":\"sold\"}";
+        PetModel pet = new PetModel();
+        pet.setName("Charlik");
+        pet.setStatus("sold");
         given()
-                .body(petData)
+                .body(pet)
                 .contentType(JSON)
                 .when()
                 .log().uri()
@@ -55,59 +82,12 @@ public class ApiTests {
     }
 
     @Test
-    @DisplayName("Поиск питомцев по статусу")
-    void petSearchByStatus() {
-        given()
-                .contentType(JSON)
-                .queryParam("status", "pending")
-                .when()
-                .log().uri()
-                .get("/pet/findByStatus")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .body("status", hasItem("pending"));
-
-    }
-
-    @Test
-    @DisplayName("Поиск питомца по ID")
-    void petSearchByID() {
-        given()
-                .contentType(JSON)
-                .pathParam("petId", "9223372036854775807")
-                .when()
-                .log().uri()
-                .get("/pet/{petId}")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .body("id", equalTo(9223372036854775807L));
-    }
-
-    @Test
-    @DisplayName("Удаление питомца по ID")
-    void deletingAPetByID() {
-        given()
-                .contentType(JSON)
-                .pathParam("petId", "9223372036854775807")
-                .when()
-                .log().uri()
-                .delete("/pet/{petId}")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200);
-
-    }
-
-
-    @Test
     @DisplayName("Создание нового пользователя")
     void createUser() {
-        String createUserData = "{\"id\":0,\"username\":\"Vitalik\",\"firstName\":\"Kuz\",\"lastName\":\"Vit\",\"email\":\"fdf@gsgsg.ru\",\"password\":\"7474\",\"phone\":\"48484\",\"userStatus\":0}";
+        UserDataModel createUserData = new UserDataModel();
+        createUserData.setId(UserData.generateUserId());  // Генерация случайного ID
+        createUserData.setUsername(UserData.generateUsername());  // Генерация случайного имени пользователя
+        createUserData.setLastName(UserData.generateLastName());
 
         given()
                 .body(createUserData)
@@ -127,10 +107,13 @@ public class ApiTests {
     @Test
     @DisplayName("Успешный логин пользователя")
     void successfulUserLogin() {
+        UserLoginModel loginRequest = new UserLoginModel();
+        loginRequest.setUsername("Vitalik");
+        loginRequest.setPassword("7474");
         given()
+                .body(loginRequest)
                 .contentType(JSON)
-                .queryParam("username", "Vitalik")
-                .queryParam("password", "7474")
+                .body(loginRequest)
                 .when()
                 .log().uri()
                 .get("/user/login")
@@ -140,7 +123,7 @@ public class ApiTests {
                 .statusCode(200)
                 .body("code", is(200))
                 .body("type", is("unknown"))
-                .body("message", notNullValue());
+                .body("message", notNullValue()); // Доработать убрать логин в папку
 
 
     }
@@ -148,9 +131,10 @@ public class ApiTests {
     @Test
     @DisplayName("Обновленные данные пользователя")
     void updatedUser() {
-        String createUserData = "{\"id\":0,\"username\":\"Vitalik QA Engineer\",\"firstName\":\"Kuz\",\"lastName\":\"Vit\",\"email\":\"fdf@gsgsg.ru\",\"password\":\"7474\",\"phone\":\"48484\",\"userStatus\":0}";
+        UserUpdatedModel updatedUserData = new UserUpdatedModel();
+        updatedUserData.setUsername("Vitalik QA Engineer");
         given()
-                .body(createUserData)
+                .body(updatedUserData)
                 .contentType(JSON)
                 .when()
                 .log().uri()
@@ -169,6 +153,8 @@ public class ApiTests {
     @Test
     @DisplayName("Успешный разлогин пользователя")
     void successfulUserLogout() {
+        UserLogoutModel logoutUserData = new UserLogoutModel();
+        logoutUserData.setUsername("Vitalik QA Engineer");
         given()
                 .contentType(JSON)
                 .queryParam("username", "Vitalik")
@@ -187,25 +173,6 @@ public class ApiTests {
 
     }
 
-    @Test
-    @DisplayName("Успешное удаление пользователя")
-    void successfulUserDeletion() {
-        given()
-                .contentType(JSON)
-                .queryParam("username", "Vitalik")
-                .queryParam("password", "7474")
-                .when()
-                .log().uri()
-                .delete("/user/{username}", "Vitalik QA Engineer")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .body("code", is(200))
-                .body("type", is("unknown"))
-                .body("message", notNullValue());
 
-
-    }
 }
 

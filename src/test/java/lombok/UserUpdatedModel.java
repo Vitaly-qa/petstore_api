@@ -1,13 +1,14 @@
 package lombok;
+
 @Data
-@Builder
-public class UserModel {
-    private Integer id;
+@NoArgsConstructor
+public class UserUpdatedModel {
+    private int id;
     private String username;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
     private String phone;
-    private Integer userStatus;
+    private int userStatus;
 }
