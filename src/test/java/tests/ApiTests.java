@@ -22,7 +22,7 @@ public class ApiTests {
     }
 
     @Test
-    @DisplayName("Добавляем нового питомца в магазин")
+    @DisplayName("Добавляем нового питомца в магазин/")
     void addingANewPetToTheStore() {
         PetModel pet = new PetModel();
         pet.setName(PetData.generatePetName());  // Генерация случайного имени питомца
