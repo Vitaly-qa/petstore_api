@@ -1,4 +1,4 @@
-package specs;
+package specs.user;
 
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.ResponseSpecification;
@@ -6,8 +6,8 @@ import io.restassured.specification.ResponseSpecification;
 import static io.restassured.filter.log.LogDetail.BODY;
 import static io.restassured.filter.log.LogDetail.STATUS;
 
-public class PetResponse {
-    public static ResponseSpecification petsResponseSpec = new ResponseSpecBuilder()
+public class UserResponse {
+    public static ResponseSpecification userResponseSpec = new ResponseSpecBuilder()
             .expectStatusCode(200)
             .log(STATUS)
             .log(BODY)

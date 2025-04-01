@@ -2,7 +2,7 @@ package data;
 
 import com.github.javafaker.Faker;
 
-public class PetData {
+public class PetDataRandom {
     private static final Faker faker = new Faker();
 
     // Генерация случайного имени питомца

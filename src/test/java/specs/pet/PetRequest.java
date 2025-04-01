@@ -1,4 +1,4 @@
-package specs;
+package specs.pet;
 
 import io.restassured.specification.RequestSpecification;
 

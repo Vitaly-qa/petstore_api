@@ -1,4 +1,7 @@
-package lombok;
+package lombok.user;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor

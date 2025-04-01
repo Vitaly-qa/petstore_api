@@ -1,4 +1,7 @@
-package lombok;
+package lombok.pet;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
