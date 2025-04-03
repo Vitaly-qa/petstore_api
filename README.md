@@ -35,8 +35,8 @@
 
 ***Локальный запуск с помощью Intellij IDEA :***
 ```bash  
-gradlew api_pet
-gradlew api_user
+./gradlew api_pet
+./gradlew api_user
 ```
 
 
