@@ -40,3 +40,15 @@ tasks.withType(Test) {
         }
     }
 }
+
+task api_pet(type: Test) {
+    useJUnitPlatform {
+        includeTags 'pet'
+    }
+}
+
+task api_user(type: Test) {
+    useJUnitPlatform {
+        includeTags 'user'
+    }
+}

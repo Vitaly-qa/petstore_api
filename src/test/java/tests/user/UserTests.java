@@ -62,7 +62,7 @@ public class UserTests extends TestBase {
 
     @Test
     @Tag("User")
-    @DisplayName("Обновленные данные пользователя")
+    @DisplayName("Обновляем данные пользователя")
     void updatedUser() {
         UserUpdated updatedUserData = new UserUpdated();
         updatedUserData.setUsername("Vitalik QA Engineer");

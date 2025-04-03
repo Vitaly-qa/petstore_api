@@ -38,7 +38,7 @@ public class PetTest extends TestBase {
 
     @Test
     @Tag("Pet")
-    @DisplayName("Поиск питомцев по статусу")
+    @DisplayName("Поиск питомца по статусу")
     void petSearchByStatus() {
         PetStatus petStatus = new PetStatus();
         petStatus.setStatus("pending");
