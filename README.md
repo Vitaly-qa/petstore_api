@@ -21,7 +21,7 @@
 
 ### **Пример отчета в Telegram:**
 
-<img src="/images/Telegram_api.PNG"> 
+<img src="/images/Telegram_api.png"> 
 
 ### [**Пример Allure отчета:**](https://jenkins.autotests.cloud/job/Centicore-test/15/allure)
 
