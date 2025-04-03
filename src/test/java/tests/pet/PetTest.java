@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import tests.TestBase;
 
 import static helpers.CustomAllureListener.withCustomTemplates;
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -23,15 +24,16 @@ public class PetTest extends TestBase {
         pet.setName(PetDataRandom.generatePetName());
         pet.setStatus(PetDataRandom.generatePetStatus());
 
-        given(petRequestSpec)
-                .filter(withCustomTemplates())
-                .body(pet)
-                .when()
-                .post("/pet")
-                .then()
-                .spec(petsResponseSpec)
-                .body("name", equalTo(pet.getName()))
-                .body("status", equalTo(pet.getStatus()));
+        step("Создаем и отправляем данные о питомце для добавления в магазин", () -> {
+            given(petRequestSpec)
+                    .body(pet)
+                    .when()
+                    .post("/pet")
+                    .then()
+                    .spec(petsResponseSpec)
+                    .body("name", equalTo(pet.getName()))
+                    .body("status", equalTo(pet.getStatus()));
+        });
     }
 
     @Test
@@ -39,14 +41,17 @@ public class PetTest extends TestBase {
     void petSearchByStatus() {
         PetStatusModel petStatus = new PetStatusModel();
         petStatus.setStatus("pending");
-        given(petRequestSpec)
-                .queryParam("status", petStatus.getStatus())
-                .when()
-                .get("/pet/findByStatus")
-                .then()
-                .spec(petsResponseSpec)
-                .body("status", hasItem(petStatus.getStatus()));
 
+        step("Поиск питомцев по статусу", () -> {
+            given(petRequestSpec)
+                    .queryParam("status", petStatus.getStatus())
+                    .when()
+                    .get("/pet/findByStatus")
+                    .then()
+                    .spec(petsResponseSpec)
+                    .body("status", hasItem(petStatus.getStatus()));
+
+        });
     }
 
     @Test
@@ -55,13 +60,16 @@ public class PetTest extends TestBase {
         PetModel pet = new PetModel();
         pet.setName("Charlik");
         pet.setStatus("sold");
-        given(petRequestSpec)
-                .body(pet)
-                .when()
-                .put("/pet")
-                .then()
-                .spec(petsResponseSpec)
-                .body("name", equalTo("Charlik"))
-                .body("status", equalTo("sold"));
+
+        step("Обновляем информацию о питомце и проверяем статус", () -> {
+            given(petRequestSpec)
+                    .body(pet)
+                    .when()
+                    .put("/pet")
+                    .then()
+                    .spec(petsResponseSpec)
+                    .body("name", equalTo("Charlik"))
+                    .body("status", equalTo("sold"));
+        });
     }
 }

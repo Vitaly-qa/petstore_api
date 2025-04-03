@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tests.TestBase;
 
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -21,16 +22,19 @@ public class UserTests extends TestBase {
     @DisplayName("Создание нового пользователя")
     void createUser() {
         UserDataModel createUserData = new UserDataModel();
-        given(userRequestSpec)
-                .body(createUserData)
-                .when()
-                .post("/user")
-                .then()
-                .spec(userResponseSpec)
-                .body("code", is(200))
-                .body("type", is("unknown"))
-                .body("message", notNullValue());
 
+        step("Создаем нового пользователя", () -> {
+            given(userRequestSpec)
+                    .body(createUserData)
+                    .when()
+                    .post("/user")
+                    .then()
+                    .spec(userResponseSpec)
+                    .body("code", is(200))
+                    .body("type", is("unknown"))
+                    .body("message", notNullValue());
+
+        });
     }
 
     @Test
@@ -39,17 +43,20 @@ public class UserTests extends TestBase {
         UserLoginModel loginRequest = new UserLoginModel();
         loginRequest.setUsername("Vitalik");
         loginRequest.setPassword("7474");
-        given(userRequestSpec)
-                .body(loginRequest)
-                .when()
-                .get("/user/login")
-                .then()
-                .spec(userResponseSpec)
-                .body("code", is(200))
-                .body("type", is("unknown"))
-                .body("message", notNullValue());
+
+        step("Выполняем логин пользователя", () -> {
+            given(userRequestSpec)
+                    .body(loginRequest)
+                    .when()
+                    .get("/user/login")
+                    .then()
+                    .spec(userResponseSpec)
+                    .body("code", is(200))
+                    .body("type", is("unknown"))
+                    .body("message", notNullValue());
 
 
+        });
     }
 
     @Test
@@ -57,16 +64,19 @@ public class UserTests extends TestBase {
     void updatedUser() {
         UserUpdatedModel updatedUserData = new UserUpdatedModel();
         updatedUserData.setUsername("Vitalik QA Engineer");
-        given(userRequestSpec)
-                .body(updatedUserData)
-                .when()
-                .put("/user/{username}", "Vitalik QA Engineer")
-                .then()
-                .spec(userResponseSpec)
-                .body("code", is(200))
-                .body("type", is("unknown"))
-                .body("message", notNullValue());
 
+        step("Обновляем данные пользователя", () -> {
+            given(userRequestSpec)
+                    .body(updatedUserData)
+                    .when()
+                    .put("/user/{username}", "Vitalik QA Engineer")
+                    .then()
+                    .spec(userResponseSpec)
+                    .body("code", is(200))
+                    .body("type", is("unknown"))
+                    .body("message", notNullValue());
+
+        });
     }
 
     @Test
@@ -74,16 +84,19 @@ public class UserTests extends TestBase {
     void successfulUserLogout() {
         UserLogoutModel logoutUserData = new UserLogoutModel();
         logoutUserData.setUsername("Vitalik QA Engineer");
-        given(userRequestSpec)
-                .queryParam("username", "Vitalik")
-                .queryParam("password", "7474")
-                .when()
-                .get("/user/logout")
-                .then()
-                .spec(userResponseSpec)
-                .body("code", is(200))
-                .body("type", is("unknown"))
-                .body("message", notNullValue());
 
+        step("Выполняем разлогин пользователя", () -> {
+            given(userRequestSpec)
+                    .queryParam("username", "Vitalik")
+                    .queryParam("password", "7474")
+                    .when()
+                    .get("/user/logout")
+                    .then()
+                    .spec(userResponseSpec)
+                    .body("code", is(200))
+                    .body("type", is("unknown"))
+                    .body("message", notNullValue());
+
+        });
     }
 }
