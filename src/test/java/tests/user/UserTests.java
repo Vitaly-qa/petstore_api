@@ -6,6 +6,7 @@ import lombok.user.UserLoginModel;
 import lombok.user.UserLogoutModel;
 import lombok.user.UserUpdatedModel;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import tests.TestBase;
 
@@ -19,6 +20,7 @@ import static specs.user.UserResponse.userResponseSpec;
 public class UserTests extends TestBase {
 
     @Test
+    @Tag("User")
     @DisplayName("Создание нового пользователя")
     void createUser() {
         UserDataModel createUserData = new UserDataModel();
@@ -38,6 +40,7 @@ public class UserTests extends TestBase {
     }
 
     @Test
+    @Tag("User")
     @DisplayName("Успешный логин пользователя")
     void successfulUserLogin() {
         UserLoginModel loginRequest = new UserLoginModel();
@@ -60,6 +63,7 @@ public class UserTests extends TestBase {
     }
 
     @Test
+    @Tag("User")
     @DisplayName("Обновленные данные пользователя")
     void updatedUser() {
         UserUpdatedModel updatedUserData = new UserUpdatedModel();
@@ -80,6 +84,7 @@ public class UserTests extends TestBase {
     }
 
     @Test
+    @Tag("User")
     @DisplayName("Успешный разлогин пользователя")
     void successfulUserLogout() {
         UserLogoutModel logoutUserData = new UserLogoutModel();

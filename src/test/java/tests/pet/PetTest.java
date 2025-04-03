@@ -4,10 +4,9 @@ import data.PetDataRandom;
 import lombok.pet.PetModel;
 import lombok.pet.PetStatusModel;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import tests.TestBase;
-
-import static helpers.CustomAllureListener.withCustomTemplates;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -18,6 +17,7 @@ import static specs.pet.PetResponse.petsResponseSpec;
 public class PetTest extends TestBase {
 
     @Test
+    @Tag("Pet")
     @DisplayName("Добавляем нового питомца в магазин")
     void addingANewPetToTheStore() {
         PetModel pet = new PetModel();
@@ -37,6 +37,7 @@ public class PetTest extends TestBase {
     }
 
     @Test
+    @Tag("Pet")
     @DisplayName("Поиск питомцев по статусу")
     void petSearchByStatus() {
         PetStatusModel petStatus = new PetStatusModel();
@@ -55,6 +56,7 @@ public class PetTest extends TestBase {
     }
 
     @Test
+    @Tag("Pet")
     @DisplayName("Обновляем информацию о питомце")
     void updatingInformationAboutThePet() {
         PetModel pet = new PetModel();
