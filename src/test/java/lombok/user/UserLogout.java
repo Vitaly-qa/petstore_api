@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UserLogoutModel {
+public class UserLogout {
     private String username;
 
 }

@@ -5,13 +5,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UserDataModel {
-    private Integer id;
+public class UserUpdated {
+    private int id;
     private String username;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
     private String phone;
-    private Integer userStatus;
+    private int userStatus;
 }

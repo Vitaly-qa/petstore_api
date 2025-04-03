@@ -1,15 +1,13 @@
 package tests.user;
 
-import io.qameta.allure.Step;
-import lombok.user.UserDataModel;
-import lombok.user.UserLoginModel;
-import lombok.user.UserLogoutModel;
-import lombok.user.UserUpdatedModel;
+import lombok.user.UserData;
+import lombok.user.UserLogin;
+import lombok.user.UserLogout;
+import lombok.user.UserUpdated;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import tests.TestBase;
-
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
@@ -23,7 +21,7 @@ public class UserTests extends TestBase {
     @Tag("User")
     @DisplayName("Создание нового пользователя")
     void createUser() {
-        UserDataModel createUserData = new UserDataModel();
+        UserData createUserData = new UserData();
 
         step("Создаем нового пользователя", () -> {
             given(userRequestSpec)
@@ -43,7 +41,7 @@ public class UserTests extends TestBase {
     @Tag("User")
     @DisplayName("Успешный логин пользователя")
     void successfulUserLogin() {
-        UserLoginModel loginRequest = new UserLoginModel();
+        UserLogin loginRequest = new UserLogin();
         loginRequest.setUsername("Vitalik");
         loginRequest.setPassword("7474");
 
@@ -66,7 +64,7 @@ public class UserTests extends TestBase {
     @Tag("User")
     @DisplayName("Обновленные данные пользователя")
     void updatedUser() {
-        UserUpdatedModel updatedUserData = new UserUpdatedModel();
+        UserUpdated updatedUserData = new UserUpdated();
         updatedUserData.setUsername("Vitalik QA Engineer");
 
         step("Обновляем данные пользователя", () -> {
@@ -87,7 +85,7 @@ public class UserTests extends TestBase {
     @Tag("User")
     @DisplayName("Успешный разлогин пользователя")
     void successfulUserLogout() {
-        UserLogoutModel logoutUserData = new UserLogoutModel();
+        UserLogout logoutUserData = new UserLogout();
         logoutUserData.setUsername("Vitalik QA Engineer");
 
         step("Выполняем разлогин пользователя", () -> {

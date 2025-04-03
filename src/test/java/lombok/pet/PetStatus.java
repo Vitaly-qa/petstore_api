@@ -5,6 +5,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PetStatusModel {
+public class PetStatus {
     private String status;
 }

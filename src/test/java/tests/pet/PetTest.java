@@ -1,8 +1,8 @@
 package tests.pet;
 
 import data.PetDataRandom;
-import lombok.pet.PetModel;
-import lombok.pet.PetStatusModel;
+import lombok.pet.Pet;
+import lombok.pet.PetStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ public class PetTest extends TestBase {
     @Tag("Pet")
     @DisplayName("Добавляем нового питомца в магазин")
     void addingANewPetToTheStore() {
-        PetModel pet = new PetModel();
+        Pet pet = new Pet();
         pet.setName(PetDataRandom.generatePetName());
         pet.setStatus(PetDataRandom.generatePetStatus());
 
@@ -40,7 +40,7 @@ public class PetTest extends TestBase {
     @Tag("Pet")
     @DisplayName("Поиск питомцев по статусу")
     void petSearchByStatus() {
-        PetStatusModel petStatus = new PetStatusModel();
+        PetStatus petStatus = new PetStatus();
         petStatus.setStatus("pending");
 
         step("Поиск питомцев по статусу", () -> {
@@ -59,7 +59,7 @@ public class PetTest extends TestBase {
     @Tag("Pet")
     @DisplayName("Обновляем информацию о питомце")
     void updatingInformationAboutThePet() {
-        PetModel pet = new PetModel();
+        Pet pet = new Pet();
         pet.setName("Charlik");
         pet.setStatus("sold");
 
