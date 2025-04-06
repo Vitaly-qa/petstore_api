@@ -1,6 +1,12 @@
 package data;
 
 import com.github.javafaker.Faker;
+import org.junit.jupiter.api.ClassOrderer;
+
+import java.util.List;
+import java.util.Random;
+import java.util.Optional;
+
 
 public class PetDataRandom {
     private static final Faker faker = new Faker();
@@ -12,7 +18,9 @@ public class PetDataRandom {
 
     // Генерация случайного статуса питомца
     public static String generatePetStatus() {
-        String[] statuses = {"available", "pending", "sold"};
-        return statuses[faker.random().nextInt(statuses.length)];  // Случайный статус из списка
+        List<String> statuses = List.of("available", "pending", "sold");
+        return Optional.ofNullable(statuses.get(new Random().nextInt(statuses.size())))
+                .orElse("available");  // по умолчанию если что-то пошло не так
     }
+
 }
