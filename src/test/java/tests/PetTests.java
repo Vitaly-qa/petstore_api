@@ -20,12 +20,12 @@ public class PetTests extends TestBase {
     @Tag("positive")
     @DisplayName("Добавляем нового питомца в магазин")
     void addingANewPetToTheStore() {
-        Pet pet = new Pet();
-        pet.setName(PetDataRandom.generatePetName());
-        pet.setStatus(PetDataRandom.generatePetStatus());
+        PetDataRandom petFactory = new PetDataRandom();
+        Pet pet = petFactory.getPet(); // случайный питомец
 
         step("Создаем и отправляем данные о питомце для добавления в магазин", () -> {
-            given(petRequestSpec)
+            given()
+                    .spec(petRequestSpec)
                     .body(pet)
                     .when()
                     .post("/pet")

@@ -1,26 +1,28 @@
 package data;
 
 import com.github.javafaker.Faker;
-import org.junit.jupiter.api.ClassOrderer;
+import lombok.pet.Pet;
 
-import java.util.List;
-import java.util.Random;
 import java.util.Optional;
-
+import java.util.Set;
 
 public class PetDataRandom {
-    private static final Faker faker = new Faker();
+    private final Faker faker = new Faker();
+    private final Set<String> validStatuses = Set.of("available", "pending", "sold");
 
-    // Генерация случайного имени питомца
-    public static String generatePetName() {
-        return faker.name().firstName();  // Генерация случайного имени питомца
+    public Pet getPet() {
+        return getPet(faker.funnyName().name(), faker.options().option(validStatuses.toArray(new String[0])));
     }
 
-    // Генерация случайного статуса питомца
-    public static String generatePetStatus() {
-        List<String> statuses = List.of("available", "pending", "sold");
-        return Optional.ofNullable(statuses.get(new Random().nextInt(statuses.size())))
-                .orElse("available");  // по умолчанию если что-то пошло не так
+    public Pet getPet(String name, String status) {
+        return new Pet()
+                .setName(name)
+                .setStatus(validateStatusOrThrow(status));
     }
 
+    private String validateStatusOrThrow(String status) {
+        return Optional.ofNullable(status)
+                .filter(validStatuses::contains)
+                .orElseThrow(() -> new IllegalArgumentException("Недопустимый статус: " + status));
+    }
 }

@@ -52,3 +52,18 @@ task api_user(type: Test) {
         includeTags 'user'
     }
 }
+
+task positive(type: Test) {
+    useJUnitPlatform {
+        includeTags("positive")
+    }
+}
+
+task negative(type: Test) {
+    useJUnitPlatform {
+        includeTags("negative")
+    }
+
+}
+
+
