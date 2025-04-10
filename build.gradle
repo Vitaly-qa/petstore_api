@@ -55,7 +55,7 @@ task api_user(type: Test) {
 
 task positive(type: Test) {
     useJUnitPlatform {
-        includeTags 'positive'
+        includeTags ("positive")
     }
 }
 

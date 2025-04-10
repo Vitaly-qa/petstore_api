@@ -57,13 +57,29 @@ public class PetTests extends TestBase {
     @Test
     @Tag("Pet")
     @Tag("positive")
-    @DisplayName("Обновляем информацию о питомце")
-    void updatingInformationAboutThePet() {
+    @DisplayName("Создаём, обновляем и удаляем питомца")
+    void createUpdateAndDeletePet() {
+        int petId = 1154616142;
         Pet pet = new Pet();
+        pet.setId(petId);
         pet.setName("Charlik");
-        pet.setStatus("sold");
+        pet.setStatus("available");
+
+        step("Создаём питомца", () -> {
+            given(petRequestSpec)
+                    .body(pet)
+                    .when()
+                    .post("/pet")
+                    .then()
+                    .spec(petsResponseSpec)
+                    .body("id", equalTo((int) petId))
+                    .body("name", equalTo("Charlik"))
+                    .body("status", equalTo("available"));
+        });
 
         step("Обновляем информацию о питомце и проверяем статус", () -> {
+            pet.setStatus("sold");
+
             given(petRequestSpec)
                     .body(pet)
                     .when()
@@ -73,19 +89,8 @@ public class PetTests extends TestBase {
                     .body("name", equalTo("Charlik"))
                     .body("status", equalTo("sold"));
         });
-    }
 
-    @Test
-    @Tag("Pet")
-    @Tag("positive")
-    @DisplayName("Удаляем питомца")
-    void deletingAPet() {
-        long petId = 9223372036854775807L;
-        Pet pet = new Pet();
-        pet.setId(petId);
-        pet.setName("Charlik");
-        pet.setStatus("sold");
-        step("Удаляем питомца и проверяем статус", () -> {
+        step("Удаляем питомца", () -> {
             given(petRequestSpec)
                     .pathParam("petId", petId)
                     .when()
@@ -94,17 +99,8 @@ public class PetTests extends TestBase {
                     .statusCode(200)
                     .body("message", equalTo(String.valueOf(petId)));
         });
-    }
 
-    @Test
-    @Tag("Pet")
-    @Tag("positive")
-    @DisplayName("Проверяем, что питомец удален")
-    void deletindfdgAPet() {
-        long petId = 9223372036854026202L;
-        Pet pet = new Pet();
-        pet.setId(petId);
-        step("Проверяем, что питома не существует", () -> {
+        step("Проверяем, что питомец удалён", () -> {
             given(petRequestSpec)
                     .pathParam("petId", petId)
                     .when()
