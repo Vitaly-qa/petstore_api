@@ -1,39 +1,27 @@
 package tests;
 
-import data.PetDataRandom;
-import lombok.pet.Pet;
+import data.PetFactory;
+import models.pet.Pet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import steps.PetApiSteps;
 import static io.qameta.allure.Allure.step;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static specs.pet.PetRequest.petRequestSpec;
-import static specs.pet.PetResponse.notFoundResponseSpec;
-import static specs.pet.PetResponse.petsResponseSpec;
+
+
 
 public class PetTests extends TestBase {
+
+    PetFactory petFactory = new PetFactory();
+    PetApiSteps petSteps = new PetApiSteps();
 
     @Test
     @Tag("Pet")
     @Tag("positive")
     @DisplayName("Добавляем нового питомца в магазин")
     void addingANewPetToTheStore() {
-        PetDataRandom petFactory = new PetDataRandom();
-        Pet pet = petFactory.getPet(); // случайный питомец
-
-        step("Создаем и отправляем данные о питомце для добавления в магазин", () -> {
-            given()
-                    .spec(petRequestSpec)
-                    .body(pet)
-                    .when()
-                    .post("/pet")
-                    .then()
-                    .spec(petsResponseSpec)
-                    .body("name", equalTo(pet.getName()))
-                    .body("status", equalTo(pet.getStatus()));
-        });
+        Pet pet = petFactory.generatePet();
+        step("Создаем питомца", () -> petSteps.createPet(pet));
     }
 
     @Test
@@ -41,17 +29,8 @@ public class PetTests extends TestBase {
     @Tag("positive")
     @DisplayName("Поиск питомца по статусу")
     void petSearchByStatus() {
-        String status = "pending"; // Прямо указываем статус, без использования модели
-        step("Поиск питомцев по статусу", () -> {
-            given(petRequestSpec)
-                    .queryParam("status", status) // Передаем статус напрямую
-                    .when()
-                    .get("/pet/findByStatus")
-                    .then()
-                    .spec(petsResponseSpec)
-                    .body("status", hasItem(status));
-
-        });
+        String status = "pending";
+        step("Поиск питомца по статусу", () -> petSteps.findPetByStatus(status));
     }
 
     @Test
@@ -59,56 +38,23 @@ public class PetTests extends TestBase {
     @Tag("positive")
     @DisplayName("Создаём, обновляем и удаляем питомца")
     void createUpdateAndDeletePet() {
-        int petId = 1154616142;
-        Pet pet = new Pet();
+        Pet pet = petFactory.generatePet("Charlik", "available");
+
+        // Генерация уникального ID типа long
+        long petId = System.currentTimeMillis();  // Используем текущее время как уникальный ID
+
         pet.setId(petId);
-        pet.setName("Charlik");
-        pet.setStatus("available");
 
-        step("Создаём питомца", () -> {
-            given(petRequestSpec)
-                    .body(pet)
-                    .when()
-                    .post("/pet")
-                    .then()
-                    .spec(petsResponseSpec)
-                    .body("id", equalTo((int) petId))
-                    .body("name", equalTo("Charlik"))
-                    .body("status", equalTo("available"));
-        });
+        step("Создаём питомца", () -> petSteps.createPetWithIdCheck(pet, petId));
 
-        step("Обновляем информацию о питомце и проверяем статус", () -> {
+        step("Обновляем питомца", () -> {
             pet.setStatus("sold");
-
-            given(petRequestSpec)
-                    .body(pet)
-                    .when()
-                    .put("/pet")
-                    .then()
-                    .spec(petsResponseSpec)
-                    .body("name", equalTo("Charlik"))
-                    .body("status", equalTo("sold"));
+            petSteps.updatePet(pet);
         });
 
-        step("Удаляем питомца", () -> {
-            given(petRequestSpec)
-                    .pathParam("petId", petId)
-                    .when()
-                    .delete("/pet/{petId}")
-                    .then()
-                    .statusCode(200)
-                    .body("message", equalTo(String.valueOf(petId)));
-        });
+        step("Удаляем питомца", () -> petSteps.deletePet(pet.getId()));
 
-        step("Проверяем, что питомец удалён", () -> {
-            given(petRequestSpec)
-                    .pathParam("petId", petId)
-                    .when()
-                    .get("/pet/{petId}")
-                    .then()
-                    .statusCode(404)
-                    .body("message", equalTo("Pet not found"));
-        });
+        step("Проверяем, что питомец удалён", () -> petSteps.checkPetIsDeleted(pet.getId()));
     }
 
     @Test
@@ -116,15 +62,6 @@ public class PetTests extends TestBase {
     @Tag("negative")
     @DisplayName("Добавляем питомца в магазин без имени")
     void addingAPetToTheStoreWithoutAName() {
-        step("Отправляем без данных питомца ", () -> {
-            given(petRequestSpec)
-                    .body("")
-                    .when()
-                    .post("/pet")
-                    .then()
-                    .spec(notFoundResponseSpec)
-                    .body("type", equalTo("unknown"))
-                    .body("message", equalTo("no data"));
-        });
+        step("Отправляем пустое тело запроса", petSteps::createPetWithEmptyBody);
     }
 }
