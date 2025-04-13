@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-
+@Data
 @Getter
 @Setter
-@Accessors(chain = true)  // Добавляем поддержку цепочки вызовов для всех сеттеров
+@Accessors(chain = true)
 public class UserData {
-    private long id;  // Используем long для ID
+    private long id;
     private String username;
     private String firstName;
     private String lastName;

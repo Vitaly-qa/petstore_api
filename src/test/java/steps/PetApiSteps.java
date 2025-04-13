@@ -1,10 +1,8 @@
 package steps;
 
 import io.qameta.allure.Step;
-import io.restassured.specification.ResponseSpecification;
 import models.pet.Pet;
 import specs.ResponseSpecs;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -21,23 +19,9 @@ public class PetApiSteps {
                 .when()
                 .post("/pet")
                 .then()
-                .spec(ResponseSpecs.getSuccessResponseSpec())
+                .spec(ResponseSpecs.getFullLogResponseSpec(200))
                 .body("name", equalTo(pet.getName()))
                 .body("status", equalTo(pet.getStatus()));
-    }
-
-    @Step("Создаём питомца и получаем его ID")
-    public Long createPetAndReturnId(Pet pet) {
-        return given()
-                .spec(baseRequestSpec)
-                .body(pet)
-                .when()
-                .post("/pet")
-                .then()
-                .spec(ResponseSpecs.getSuccessResponseSpec())
-                .body("name", equalTo(pet.getName()))
-                .body("status", equalTo(pet.getStatus()))
-                .extract().path("id");
     }
 
     @Step("Обновляем информацию о питомце")
@@ -48,7 +32,7 @@ public class PetApiSteps {
                 .when()
                 .put("/pet")
                 .then()
-                .spec(ResponseSpecs.getSuccessResponseSpec())
+                .spec(ResponseSpecs.getFullLogResponseSpec(200))
                 .body("name", equalTo(pet.getName()))
                 .body("status", equalTo(pet.getStatus()));
     }
@@ -77,19 +61,6 @@ public class PetApiSteps {
                 .body("message", equalTo("Pet not found"));
     }
 
-    @Step("Создаём питомца и проверяем ID")
-    public void createPetWithIdCheck(Pet pet, int expectedId) {
-        given()
-                .spec(baseRequestSpec)
-                .body(pet)
-                .when()
-                .post("/pet")
-                .then()
-                .spec(ResponseSpecs.getSuccessResponseSpec())
-                .body("id", equalTo(expectedId))
-                .body("name", equalTo(pet.getName()))
-                .body("status", equalTo(pet.getStatus()));
-    }
 
     @Step("Поиск питомца по статусу")
     public void findPetByStatus(String status) {
@@ -99,7 +70,7 @@ public class PetApiSteps {
                 .when()
                 .get("/pet/findByStatus")
                 .then()
-                .spec(ResponseSpecs.getSuccessResponseSpec())
+                .spec(ResponseSpecs.getFullLogResponseSpec(200))
                 .body("status", hasItem(status));
     }
 
@@ -111,13 +82,12 @@ public class PetApiSteps {
                 .when()
                 .post("/pet")
                 .then()
-                .spec(ResponseSpecs.getErrorResponseSpec(405))
+                .spec(ResponseSpecs.getBaseResponseSpec(405))
                 .body("type", equalTo("unknown"))
                 .body("message", equalTo("no data"));
     }
 
-    // Метод в PetApiSteps
     public void createPetWithIdCheck(Pet pet, long petId) {
-        // код, который использует petId типа long
+
     }
 }

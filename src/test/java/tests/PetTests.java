@@ -11,7 +11,6 @@ import steps.PetApiSteps;
 import static io.qameta.allure.Allure.step;
 
 
-
 public class PetTests extends TestBase {
 
     PetFactory petFactory = new PetFactory();
@@ -22,7 +21,7 @@ public class PetTests extends TestBase {
     @Tag("positive")
     @DisplayName("Добавляем нового питомца в магазин")
     void addingANewPetToTheStore() {
-        Pet pet = petFactory.generatePet(); // имя и статус генерируются
+        Pet pet = petFactory.generatePet();
         step("Создаём питомца", () -> petSteps.createPet(pet));
     }
 
@@ -32,7 +31,7 @@ public class PetTests extends TestBase {
     @Tag("positive")
     @DisplayName("Создаём питомца с разными статусами")
     void createPetWithDifferentStatuses(String status) {
-        Pet pet = petFactory.generatePetByStatus(status); // имя генерируется, статус передаётся
+        Pet pet = petFactory.generatePetByStatus(status);
         step("Создаём питомца со статусом: " + status, () -> petSteps.createPet(pet));
     }
 
@@ -50,8 +49,8 @@ public class PetTests extends TestBase {
     @Tag("positive")
     @DisplayName("Создаём, обновляем и удаляем питомца")
     void createUpdateAndDeletePet() {
-        Pet pet = petFactory.generatePet("Charlik", "available");
-        long petId = System.currentTimeMillis(); // уникальный ID
+        Pet pet = petFactory.generatePet();
+        long petId = System.currentTimeMillis();
         pet.setId(petId);
 
         step("Создаём питомца", () -> petSteps.createPetWithIdCheck(pet, petId));

@@ -1,13 +1,17 @@
 package models.user;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import lombok.*;
 
 @Getter
 @Setter
-@Accessors(chain = true)  // Добавляем поддержку цепочки вызовов для всех сеттеров
+@Builder
 public class UserLogin {
     private String username;
     private String password;
+
+
+    public UserLogin(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }
