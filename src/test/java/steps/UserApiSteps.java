@@ -1,25 +1,29 @@
 package steps;
 
+import io.qameta.allure.Step;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import models.user.UserData;
 import models.user.UserLogin;
+import specs.ResponseSpecs;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+import static specs.BaseRequestSpecs.baseRequestSpec;
 
 public class UserApiSteps {
 
-    private final RequestSpecification userRequestSpec;
+    private final RequestSpecification getSuccessResponseSpec;
     private final ResponseSpecification userResponseSpec;
 
     public UserApiSteps(RequestSpecification userRequestSpec, ResponseSpecification userResponseSpec) {
-        this.userRequestSpec = userRequestSpec;
+        this.getSuccessResponseSpec = userRequestSpec;
         this.userResponseSpec = userResponseSpec;
     }
 
     // Метод для создания нового пользователя
     public void createUser(UserData userData) {
-        given(userRequestSpec)
+        given(baseRequestSpec)
                 .body(userData)
                 .when()
                 .post("/user")
@@ -32,12 +36,12 @@ public class UserApiSteps {
 
     // Метод для логина пользователя
     public void loginUser(UserLogin loginRequest) {
-        given(userRequestSpec)
+        given(baseRequestSpec)
                 .body(loginRequest)
                 .when()
                 .get("/user/login")
                 .then()
-                .spec(userResponseSpec)
+                .spec(ResponseSpecs.getSuccessResponseSpec())
                 .body("code", is(200))
                 .body("type", is("unknown"))
                 .body("message", notNullValue());
@@ -45,13 +49,13 @@ public class UserApiSteps {
 
     // Метод для разлогина пользователя
     public void logoutUser(String username, String password) {
-        given(userRequestSpec)
+        given(baseRequestSpec)
                 .queryParam("username", username)
                 .queryParam("password", password)
                 .when()
                 .get("/user/logout")
                 .then()
-                .spec(userResponseSpec)
+                .spec(ResponseSpecs.getSuccessResponseSpec())
                 .body("code", is(200))
                 .body("type", is("unknown"))
                 .body("message", notNullValue());
@@ -59,12 +63,12 @@ public class UserApiSteps {
 
     // Метод для обновления данных пользователя
     public void updateUser(UserData updatedUserData, String username) {
-        given(userRequestSpec)
+        given(baseRequestSpec)
                 .body(updatedUserData)
                 .when()
                 .put("/user/{username}", username)
                 .then()
-                .spec(userResponseSpec)
+                .spec(ResponseSpecs.getSuccessResponseSpec())
                 .body("code", is(200))
                 .body("type", is("unknown"))
                 .body("message", notNullValue());
@@ -72,13 +76,24 @@ public class UserApiSteps {
 
     // Метод для поиска несуществующего пользователя
     public void searchNonExistentUser(String username) {
-        given(userRequestSpec)
+        given(baseRequestSpec)
                 .log().all()
                 .when()
                 .get("/user/{username}", username)
                 .then()
                 .statusCode(404)
                 .body("message", equalTo("User not found"));
+    }
+
+    @Step("Удаляем пользователя с именем: {username}")
+    public void deleteUser(String username) {
+        given()
+                .spec(baseRequestSpec)
+                .when()
+                .delete("/user/{username}", username)
+                .then()
+                .statusCode(200)
+                .body("message", equalTo(username));
     }
 }
 

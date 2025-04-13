@@ -5,6 +5,8 @@ import models.pet.Pet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import steps.PetApiSteps;
 import static io.qameta.allure.Allure.step;
 
@@ -20,8 +22,18 @@ public class PetTests extends TestBase {
     @Tag("positive")
     @DisplayName("Добавляем нового питомца в магазин")
     void addingANewPetToTheStore() {
-        Pet pet = petFactory.generatePet();
-        step("Создаем питомца", () -> petSteps.createPet(pet));
+        Pet pet = petFactory.generatePet(); // имя и статус генерируются
+        step("Создаём питомца", () -> petSteps.createPet(pet));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"available", "pending", "sold"})
+    @Tag("Pet")
+    @Tag("positive")
+    @DisplayName("Создаём питомца с разными статусами")
+    void createPetWithDifferentStatuses(String status) {
+        Pet pet = petFactory.generatePetByStatus(status); // имя генерируется, статус передаётся
+        step("Создаём питомца со статусом: " + status, () -> petSteps.createPet(pet));
     }
 
     @Test
@@ -39,10 +51,7 @@ public class PetTests extends TestBase {
     @DisplayName("Создаём, обновляем и удаляем питомца")
     void createUpdateAndDeletePet() {
         Pet pet = petFactory.generatePet("Charlik", "available");
-
-        // Генерация уникального ID типа long
-        long petId = System.currentTimeMillis();  // Используем текущее время как уникальный ID
-
+        long petId = System.currentTimeMillis(); // уникальный ID
         pet.setId(petId);
 
         step("Создаём питомца", () -> petSteps.createPetWithIdCheck(pet, petId));
