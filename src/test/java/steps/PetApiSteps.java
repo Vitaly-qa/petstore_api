@@ -2,7 +2,6 @@ package steps;
 
 import io.qameta.allure.Step;
 import models.pet.Pet;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;

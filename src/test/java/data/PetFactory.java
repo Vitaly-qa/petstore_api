@@ -2,7 +2,6 @@ package data;
 
 import com.github.javafaker.Faker;
 import models.pet.Pet;
-
 import java.util.Optional;
 import java.util.Set;
 
