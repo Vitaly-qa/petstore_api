@@ -1,6 +1,7 @@
 package steps;
 
 import io.qameta.allure.Step;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import models.user.UserData;
 import models.user.UserLogin;
@@ -61,6 +62,23 @@ public class UserApiSteps {
                 .get("/user/{username}", username)
                 .then()
                 .spec(getFullLogResponseSpec(404)); // Ожидаем 404
+    }
+
+    @Step("Обновляем пользователя {existingUsername}")
+    public ValidatableResponse updateUser(String existingUsername, UserData updatedUserData) {
+        return given(requestSpec)
+                .body(updatedUserData)
+                .when()
+                .put("/user/{username}", existingUsername)
+                .then();
+    }
+
+    @Step("Поиск пользователя {username}")
+    public ValidatableResponse searchUser(String username) {
+        return given(requestSpec)
+                .when()
+                .get("/user/{username}", username)
+                .then();
     }
 }
 

@@ -31,7 +31,7 @@ public class PetTests extends TestBase {
     @Tag("positive")
     @DisplayName("Создаём питомца с разными статусами")
     void createPetWithDifferentStatuses(String status) {
-        Pet pet = petFactory.generatePetByStatus(status);
+        Pet pet = petFactory.generatePet(status);
         step("Создаём питомца со статусом: " + status, () -> petSteps.createPet(pet));
     }
 

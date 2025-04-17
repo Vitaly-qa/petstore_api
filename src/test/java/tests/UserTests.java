@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import steps.UserApiSteps;
 import static io.qameta.allure.Allure.step;
+import static org.hamcrest.Matchers.*;
 import static specs.BaseRequestSpecs.baseRequestSpec;
 
 
@@ -51,5 +52,41 @@ public class UserTests extends TestBase {
             userSteps.searchNonExistentUser(username);
         });
     }
+
+
+    @Test
+    @Tag("User")
+    @Tag("negative")
+    @DisplayName("Поиск несуществующего пользователя")
+    void searchNonExistentUser() {
+        String nonExistentUsername = "NonExistentUser";
+
+        UserApiSteps userApiSteps = new UserApiSteps(baseRequestSpec);
+
+        step("Поиск несуществующего пользователя", () -> {
+            userApiSteps.searchUser(nonExistentUsername)
+                    .statusCode(404)
+                    .body("message", equalTo("User not found"));
+        });
+    }
+
+    @Test
+    @Tag("User")
+    @Tag("positive")
+    @DisplayName("Обновляем данные пользователя (сгенерированное имя)")
+    void updatedUsersWithGeneratedName() {
+        UserData userData = userFactory.generateUser();
+        UserApiSteps userApiSteps = new UserApiSteps(baseRequestSpec);
+
+        step("Обновляем данные пользователя", () -> {
+            userApiSteps.updateUser(userData.getUsername(), userData)
+                    .body("code", is(200))
+                    .body("type", is("unknown"))
+                    .body("message", notNullValue());
+        });
+    }
 }
+
+
+
 

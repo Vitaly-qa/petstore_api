@@ -14,7 +14,6 @@ public class ResponseSpecs {
                 .build();
     }
 
-
     public static ResponseSpecification getFullLogResponseSpec(int statusCode) {
         return new ResponseSpecBuilder()
                 .expectStatusCode(statusCode)

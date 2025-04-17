@@ -13,7 +13,7 @@ public class PetFactory {
         return generatePet(faker.funnyName().name(), getRandomStatus());
     }
 
-    public Pet generatePetByStatus(String status) {
+    public Pet generatePet(String status) {
         return generatePet(faker.funnyName().name(), status);
     }
 

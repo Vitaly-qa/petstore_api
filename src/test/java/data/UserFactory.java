@@ -7,7 +7,6 @@ import com.github.javafaker.Faker;
 import models.user.UserData;
 import models.user.UserLogin;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
