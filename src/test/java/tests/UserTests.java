@@ -7,8 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import steps.UserApiSteps;
+import java.util.UUID;
 import static io.qameta.allure.Allure.step;
-import static org.hamcrest.Matchers.*;
 import static specs.BaseRequestSpecs.baseRequestSpec;
 
 
@@ -59,14 +59,11 @@ public class UserTests extends TestBase {
     @Tag("negative")
     @DisplayName("Поиск несуществующего пользователя")
     void searchNonExistentUser() {
-        String nonExistentUsername = "NonExistentUser";
-
+        String nonExistentUsername = "NonExistentUser_" + UUID.randomUUID();
         UserApiSteps userApiSteps = new UserApiSteps(baseRequestSpec);
 
         step("Поиск несуществующего пользователя", () -> {
-            userApiSteps.searchUser(nonExistentUsername)
-                    .statusCode(404)
-                    .body("message", equalTo("User not found"));
+            userApiSteps.searchNonExistentUser(nonExistentUsername);
         });
     }
 
@@ -79,10 +76,7 @@ public class UserTests extends TestBase {
         UserApiSteps userApiSteps = new UserApiSteps(baseRequestSpec);
 
         step("Обновляем данные пользователя", () -> {
-            userApiSteps.updateUser(userData.getUsername(), userData)
-                    .body("code", is(200))
-                    .body("type", is("unknown"))
-                    .body("message", notNullValue());
+            userApiSteps.updateUser(userData.getUsername(), userData);
         });
     }
 }

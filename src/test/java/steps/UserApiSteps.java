@@ -6,6 +6,7 @@ import io.restassured.specification.RequestSpecification;
 import models.user.UserData;
 import models.user.UserLogin;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static specs.ResponseSpecs.getFullLogResponseSpec;
 
 public class UserApiSteps {
@@ -80,6 +81,8 @@ public class UserApiSteps {
                 .get("/user/{username}", username)
                 .then();
     }
+
+
 }
 
 
